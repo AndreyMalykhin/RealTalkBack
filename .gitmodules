@@ -1,0 +1,4 @@
+[submodule "real_talk"]
+    path = tools/real_talk
+    url = git@github.com:AndreyMalykhin/RealTalk.git
+    ignore = dirty

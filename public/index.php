@@ -1,6 +1,7 @@
 <?php
 
 require '../vendor/autoload.php';
+$environmentVars = require '../environment.php';
 
 use Slim\Container;
 use Slim\App;
@@ -19,7 +20,8 @@ $c['errorHandler'] = function ($c) {
 };
 $app = new App($c);
 $app->post('/v1/vm', function(
-    ServerRequestInterface $request, ResponseInterface $response) {
+    ServerRequestInterface $request,
+    ResponseInterface $response) use ($environmentVars) {
     if (!$request->isXhr()) {
         throw new Exception('Not XmlHttpRequest');
     }
@@ -27,12 +29,12 @@ $app->post('/v1/vm', function(
     if (empty($_SESSION['sandbox_dir_path'])) {
         $sandboxDirPath = sys_get_temp_dir() . DIRECTORY_SEPARATOR . uniqid();
         $srcDirPath = $sandboxDirPath . DIRECTORY_SEPARATOR . 'src';
-        
+
         if (!mkdir($srcDirPath, 0777, true)) {
             throw new Exception(
                 'Failed to create src dir: ' . $srcDirPath);
         }
-        
+
         $_SESSION['sandbox_dir_path'] = $sandboxDirPath;
     } else {
         $sandboxDirPath = $_SESSION['sandbox_dir_path'];
@@ -42,6 +44,10 @@ $app->post('/v1/vm', function(
     $srcFilePath = $srcDirPath . DIRECTORY_SEPARATOR . 'app.rts';
     $requestBody = $request->getParsedBody();
 
+    if (!array_key_exists('code', $requestBody)) {
+        throw new Exception('No code');
+    }
+
     if (file_put_contents($srcFilePath, $requestBody['code']) === false) {
         throw new Exception('Failed to write file: ' . $srcFilePath);
     }
@@ -50,16 +56,18 @@ $app->post('/v1/vm', function(
         throw new Exception('Failed to set working dir:' . $sandboxDirPath);
     }
 
-    $output = 'AZAZA';
-    // $output = shell_exec('realtalkc --import=/usr/local/share/realtalk/stdlib app.rts');
+    $stdLibDirPath = escapeshellarg($environmentVars['std_lib_dir_path']);
+    $output = shell_exec('realtalkc --import=' . $stdLibDirPath . ' app.rts');
 
-    // if (empty($output)) {
-    //     $output = shell_exec('realtalkl --import=/usr/local/share/realtalk/stdlib app.rte app.rtm');
+    if (empty($output)) {
+        $output = shell_exec('realtalkl --import=' . $stdLibDirPath
+            . ' app.rte std.rtl app.rtm');
 
-    //     if (empty($output)) {
-    //         $output = shell_exec('realtalkvm app.rte');
-    //     }
-    // }
+        if (empty($output)) {
+            $output = shell_exec('realtalkvm build' . DIRECTORY_SEPARATOR
+                . 'bin' . DIRECTORY_SEPARATOR . 'app.rte');
+        }
+    }
 
     $response = $response->withHeader('Content-Type', 'application/json');
     return $response->write(json_encode(['output' => $output]));
