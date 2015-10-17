@@ -1,4 +1,5 @@
 /.project.el
 /composer.phar
 /environment.php
+/vagrant-environment.yml
 /.vagrant

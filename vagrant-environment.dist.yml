@@ -1,0 +1,15 @@
+host: realtalkback.local
+frontend_host: realtalkfront.local
+port: 80
+
+virtual_machine:
+  host_port: 8080
+  cores_count: 4
+  ram_size: 4096
+
+digital_ocean:
+  image: ubuntu-14-04-x64
+  region: nyc2
+  ram_size: 512mb
+  cores_count: 1
+  token: azaza
