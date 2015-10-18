@@ -4,12 +4,12 @@ projectDir="$1"
 environment="$2"
 port="$3"
 host="$4"
-frontendHost="$5"
+frontendOrigin="$5"
 swapSize="$6"
 swapFilePath="/swapfile"
 
 if [ "$environment" = "dev" ]; then
-    frontendHost="*"
+    frontendOrigin="*"
 fi
 
 sudo fallocate -l ${swapSize} ${swapFilePath} \
@@ -41,7 +41,7 @@ server {
     fastcgi_index index.php;
     fastcgi_param SCRIPT_FILENAME \$document_root\$fastcgi_script_name;
     include fastcgi_params;
-    add_header Access-Control-Allow-Origin ${frontendHost};
+    add_header Access-Control-Allow-Origin ${frontendOrigin};
     add_header Access-Control-Allow-Methods GET,POST,OPTIONS;
     add_header Access-Control-Allow-Headers DNT,X-CustomHeader,Keep-Alive,User-Agent,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type;
   }

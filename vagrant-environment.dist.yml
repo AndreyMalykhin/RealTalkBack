@@ -1,6 +1,6 @@
 host: realtalkback.local
-frontend_host: realtalkfront.local
 port: 80
+frontend_origin: http://realtalkfront.local
 
 virtual_machine:
   host_port: 8080

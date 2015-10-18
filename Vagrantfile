@@ -55,7 +55,7 @@ Vagrant.configure(2) do |config|
     override.vm.synced_folder ".", projectDir, :nfs => true
     override.bindfs.bind_folder projectDir, projectDir
 
-    override.vm.provision :shell, path: provisionFile, args: [projectDir, "dev", environmentVars['port'], environmentVars['host'], environmentVars['frontend_host'], environmentVars['virtual_machine']['swap_size']]
+    override.vm.provision :shell, path: provisionFile, args: [projectDir, "dev", environmentVars['port'], environmentVars['host'], environmentVars['frontend_origin'], environmentVars['virtual_machine']['swap_size']]
     override.vm.provision :shell, path: realTalkProvisionFile, args: [realTalkProjectDir, "dev", environmentVars['virtual_machine']['cores_count']]
 
     provider.name = "real_talk_back"
@@ -70,7 +70,7 @@ Vagrant.configure(2) do |config|
     override.vm.box_url = "https://github.com/smdahlen/vagrant-digitalocean/raw/master/box/digital_ocean.box"
     override.vm.synced_folder ".", projectDir, type: 'rsync', rsync__exclude: [".git/", ".vagrant/"]
 
-    override.vm.provision :shell, path: provisionFile, args: [projectDir, "prod", environmentVars['port'], environmentVars['host'], environmentVars['frontend_host'], environmentVars['digital_ocean']['swap_size']]
+    override.vm.provision :shell, path: provisionFile, args: [projectDir, "prod", environmentVars['port'], environmentVars['host'], environmentVars['frontend_origin'], environmentVars['digital_ocean']['swap_size']]
     override.vm.provision :shell, path: realTalkProvisionFile, args: [realTalkProjectDir, "prod", environmentVars['digital_ocean']['cores_count']]
 
     provider.token = environmentVars['digital_ocean']['token']
