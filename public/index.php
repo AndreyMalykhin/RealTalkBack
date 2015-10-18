@@ -60,8 +60,9 @@ $app->post('/v1/vm', function(
             . ' app.rte std.rtl app.rtm');
 
         if (empty($output)) {
-            $output = shell_exec('realtalkvm build' . DIRECTORY_SEPARATOR
-                . 'bin' . DIRECTORY_SEPARATOR . 'app.rte');
+            $output = shell_exec('ulimit -t 30; realtalkvm build'
+                . DIRECTORY_SEPARATOR . 'bin' . DIRECTORY_SEPARATOR
+                . 'app.rte');
         }
     }
 
