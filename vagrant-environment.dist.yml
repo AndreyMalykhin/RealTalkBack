@@ -6,10 +6,12 @@ virtual_machine:
   host_port: 8080
   cores_count: 4
   ram_size: 4096
+  swap_size: 1G
 
 digital_ocean:
   image: ubuntu-14-04-x64
   region: nyc2
   ram_size: 512mb
+  swap_size: 1G
   cores_count: 1
   token: azaza

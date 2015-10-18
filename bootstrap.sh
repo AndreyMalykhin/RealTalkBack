@@ -5,10 +5,19 @@ environment="$2"
 port="$3"
 host="$4"
 frontendHost="$5"
+swapSize="$6"
+swapFilePath="/swapfile"
 
 if [ "$environment" = "dev" ]; then
     frontendHost="*"
 fi
+
+sudo fallocate -l ${swapSize} ${swapFilePath} \
+    && sudo chmod 600 ${swapFilePath} \
+    && sudo mkswap ${swapFilePath} \
+    && sudo swapon ${swapFilePath} \
+    && echo "${swapFilePath}   none    swap    sw    0   0" | sudo tee -a /etc/fstab \
+    && sudo sysctl vm.swappiness=10
 
 sudo apt-get update \
 && sudo apt-get -y install nginx php5-cli php5-fpm
