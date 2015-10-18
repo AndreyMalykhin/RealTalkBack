@@ -22,10 +22,6 @@ $app = new App($c);
 $app->post('/v1/vm', function(
     ServerRequestInterface $request,
     ResponseInterface $response) use ($environmentVars) {
-    if (!$request->isXhr()) {
-        throw new Exception('Not XmlHttpRequest');
-    }
-
     if (empty($_SESSION['sandbox_dir_path'])) {
         $sandboxDirPath = sys_get_temp_dir() . DIRECTORY_SEPARATOR . uniqid();
         $srcDirPath = $sandboxDirPath . DIRECTORY_SEPARATOR . 'src';
